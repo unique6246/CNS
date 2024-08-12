@@ -1,58 +1,46 @@
-//pg7
-import java.math.*;
-import java.util.*;
+import java.math.BigInteger;
+import java.util.Scanner;
 
 class p7 {
     public static void main(String args[]) {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Enter m:");
-        int msg = sc.nextInt();
+        BigInteger msg = sc.nextBigInteger();
 
         System.out.println("Enter p:");
-        int p = sc.nextInt();
+        BigInteger p = sc.nextBigInteger();
 
         System.out.println("Enter q:");
-        int q = sc.nextInt();
+        BigInteger q = sc.nextBigInteger();
 
-        int n = p * q;
-        int z = (p - 1) * (q - 1);
-        System.out.println("the value of z = " + z);
+        BigInteger n = p.multiply(q);
+        BigInteger z = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+        System.out.println("The value of z = " + z);
 
-        int e;
-        for (e = 2; e < z; e++) {
-            if (gcd(e, z) == 1) {
+        BigInteger e = BigInteger.TWO;
+        while (e.compareTo(z) < 0) {
+            if (gcd(e, z).equals(BigInteger.ONE)) {
                 break;
             }
+            e = e.add(BigInteger.ONE);
         }
-        System.out.println("the value of e = " + e);
+        System.out.println("The value of e = " + e);
 
-        int d = 0;
-        for (int i = 0; i <= 9; i++) {
-            int x = 1 + (i * z);
-            if (x % e == 0) {
-                d = x / e;
-                break;
-            }
-        }
-        System.out.println("the value of d = " + d);
+        BigInteger d = e.modInverse(z);
+        System.out.println("The value of d = " + d);
 
-        double c = (Math.pow(msg, e)) % n;
+        BigInteger c = msg.modPow(e, n);
         System.out.println("Encrypted message is : " + c);
 
-        BigInteger N = BigInteger.valueOf(n);
-        BigInteger C = BigDecimal.valueOf(c).toBigInteger();
-        BigInteger msgback = (C.pow(d)).mod(N);
-        
+        BigInteger msgback = c.modPow(d, n);
         System.out.println("Decrypted message is : " + msgback);
-
-       // sc.close();
     }
 
-    static int gcd(int e, int z) {
-        if (e == 0)
-            return z;
+    static BigInteger gcd(BigInteger a, BigInteger b) {
+        if (a.equals(BigInteger.ZERO))
+            return b;
         else
-            return gcd(z % e, e);
+            return gcd(b.mod(a), a);
     }
 }
